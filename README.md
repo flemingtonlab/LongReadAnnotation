@@ -13,7 +13,10 @@ Perl 5
 File::Basename
 
 # Installation
+```
 git clone https://github.com/flemingtonlab/LongReadAnnotation.git
+
+```
 
 # File formats
 
