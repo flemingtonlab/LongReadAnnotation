@@ -13,7 +13,7 @@ my $strand;
 sub program_info {
     print "\n\tOVERVIEW: peak_caller_from_wigs.pl is designed to facilitate the use of custom input parameters to accommodate different \n\tgoals as well as distinct characteristics of different organisms, such as viruses, which have higher densities of promoters. \n\n\tInputs:\n\t\t-w\toption facilitates the input of multiple wig files for an analysis (input wigs must be of same strand).\n\t\t-mw\tmax peak width \n\t\t-fva\tfraction of max peak value for adjacent signals\n\t\t-mspd\tminimum value for a single position depth signal to seed a peak\n\t\t-s\tstrand of wig files analyzed\n\n\tOption:\n\t\t\-h help
     
-    \n\n\tUsage: perl peak_caller_from_wigs.pl [INPUTS] -w <file1.wig,file2.wig,file3.wig,...> -mw <max peak width> -fva <minimum fraction of main peak for adjacent signals to be included in peak> -mspd <minimum single position depth to seed peak> -s <strand of wig files (+ or -)>\n\n\tExample: perl peak_caller_from_wigs.pl -w PATH/file1.wig,PATH/file2.wig,PATH/file3.wig -mw 8 -fva 0.2 -mspd 200 -s + \n\n";
+    \n\n\tUsage: perl peak_caller_from_wigs.pl [INPUTS] -w <file1.wig,file2.wig,file3.wig,...> -mw <max peak width> -fva <minimum fraction of main peak for adjacent signals to be included in peak> -mspd <minimum single position depth to seed peak> -s <strand of wig files (+ or -)>\n\n\tExample: perl peak_caller_from_wigs.pl -w PATH/file1.wig,PATH/file2.wig,file3.wig -mw 8 -fva 0.2 -mspd 200 -s + \n\n";
     exit;
 }
 
@@ -21,8 +21,8 @@ sub options {
     if (scalar @ARGV == 0) {
         program_info;
         exit;
-    }
-    for (my $i=0; $i < scalar @ARGV; $i++) {
+    }    
+    for (my $i=0; $i < scalar(@ARGV); $i++) {
         if ($ARGV[$i] eq "\-w") {
             @wig_files = split("\,", $ARGV[$i+1]);
         }
@@ -162,11 +162,11 @@ sub determine_positions_with_min_single_position_depth {
 
 sub filter_first_run_peaks {
     print "Identifying max peaks within max distance...\n\n"; 
-
+    my $k = 0;
     for(my $i=0; $i < $first_run_peaks_length; $i++) {
         my @split_i = split("\t", $first_run_peaks[$i]);
         my $omit_count = 0;
-        for(my $j=0; $j < $first_run_peaks_length; $j++) {
+        for(my $j=$k; $j < $first_run_peaks_length; $j++) {
             my @split_j = split("\t", $first_run_peaks[$j]);
             if($split_i[0] eq $split_j[0]) {
                 if($split_j[1] >= $split_i[1]-$max_peak_width and $split_j[1] <= $split_i[1]+$max_peak_width) {
@@ -174,6 +174,15 @@ sub filter_first_run_peaks {
                         $omit_count++;
                     }
                 }
+            }
+            if($split_i[0] eq $split_j[0] and $split_j[1] > $split_i[1]+$max_peak_width) {
+                if($j > 4*$max_peak_width) {
+                    $k = $j-(4*$max_peak_width);
+                }
+                else {
+                    $k = 0;
+                }
+                last;
             }
         }
         if($omit_count == 0) {
@@ -190,11 +199,12 @@ sub identify_clusters {
     my $output_file = $outdirectory."\/PEAKS_max_width_".$max_peak_width.".fraction_max_peaks_".$fraction_value_for_adjacent_peaks.".min_single_pos_depth_".$min_single_position_depth.".strand_".$strand.".bed";
     open(OUT, ">$output_file") or die "couldn't open output file";
     my $peak_count = 0;
+    my $k = 0;
     for(my $i=0; $i < $second_run_peaks_length; $i++) {
         $peak_count++;
         my @split_i = split("\t", $second_run_peaks[$i]);
         my @add_j_positions_loop_value = ();
-        for(my $j=0; $j < $all_positions_length; $j++) {
+        for(my $j=$k; $j < $all_positions_length; $j++) {
             my @split_j = split("\t", $all_positions[$j]);
             
             if($split_i[0] eq $split_j[0]) {
@@ -203,7 +213,13 @@ sub identify_clusters {
                         push(@add_j_positions_loop_value, $j);
                     }
                 }
-                elsif($split_j[1] > $split_i[1]+$max_peak_width) {
+                if($split_j[1] > $split_i[1]+$max_peak_width) {
+                    if($j > 4*$max_peak_width) {
+                        $k = $j-(4*$max_peak_width);
+                    }
+                    else {
+                        $k = 0;
+                    }
                     last;
                 }
             }
@@ -257,8 +273,8 @@ sub identify_clusters {
 }
 options;
 qc;
-
 merge_wigs;
 determine_positions_with_min_single_position_depth;
 filter_first_run_peaks;
 identify_clusters;
+
