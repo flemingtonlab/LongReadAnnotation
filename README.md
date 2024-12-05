@@ -1,5 +1,5 @@
 # LongReadAnnotation 
-![Validation schematic](images/2_long_read_validation_schematic.png)
+![Validation schematic](images/2_long_read_validation_schematic.jpg)
 
 # Citation
 
@@ -18,6 +18,7 @@ File::Basename
 git clone https://github.com/flemingtonlab/LongReadAnnotation.git
 ```
 
+
 # File formats
 
 | File    | Description     |
@@ -26,3 +27,4 @@ git clone https://github.com/flemingtonlab/LongReadAnnotation.git
 | BED12 | Standard BED12 format  |
 | BED6 | Standard BED6 format  |
 | Genome fasta | Standard genome fasta (can be wrapped or unwrapped)|
+
