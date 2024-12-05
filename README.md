@@ -1,5 +1,5 @@
 # LongReadAnnotation 
-![LR validation graphic](images/2_long_read_validation_schematic.png)
+![Validation schematic](images/2_long_read_validation_schematic.png)
 
 # Citation
 
