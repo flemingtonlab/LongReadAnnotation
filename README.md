@@ -30,7 +30,6 @@ git clone https://github.com/flemingtonlab/LongReadAnnotation.git
 | BED12         | Standard BED12 format                            |
 | BED6          | Standard BED6 format                             |
 | Genome fasta  | Standard genome fasta (can be wrapped or unwrapped) 
-|
 
 ## LongReadAnnotation Pipeline
 ### 1. Identify Start Site Clusters
