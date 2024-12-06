@@ -14,7 +14,7 @@ Erik K Flemington, Dinh Truong Nguyen
 ## Dependencies
 - File::Basename
 
-##Installation
+## Installation
 1. Clone the repository:
 ```sh
 git clone https://github.com/flemingtonlab/LongReadAnnotation.git
