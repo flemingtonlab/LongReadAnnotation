@@ -43,3 +43,27 @@ git clone https://github.com/flemingtonlab/LongReadAnnotation.git
 
 	Sort concatenated positive plus negative strand bed files (not essential but is a good configuration for the file)
 	- sort -V -k 1,1 -k 2,2n -k 3,3n /PATH/CAGE_peaks_positive_plus_negative_strand.bed > /PATH/CAGE_peaks_positive_plus_negative_strand_sorted.bed
+
+2) identify 3' site clusters
+
+	3’ LR end summary (output is wiggle file coverage of 3’ end coverage)
+	- perl /PATH/LR_3prime_end_summation.pl -bed /PATH/LR.bed 
+
+	Identify 3’ end clusters
+	- perl /PATH/peak_caller_from_wigs.pl -w PATH/MC1_3p_chr1.wig,/PATH/MC2_3p_chr1.wig,/PATH/MC4_3p_chr1.wig -mw 8 -fva 0.2 -mspd 10 -s +
+	- perl /PATH/peak_caller_from_wigs.pl -w PATH/MC1_3p_negative_values_chr1.wig,/PATH/MC2_3p_negative_values_chr1.wig,/PATH/MC4_3p_negative_values_chr1.wig -mw 8 -fva 0.2 -mspd 10 -s -
+
+	Concatenate positive and negative strand wig files
+	- cat /PATH/3p_peaks_positive_strand.bed /PATH/3p_peaks_negative_strand.bed > /PATH/3p_peaks_positive_plus_negative_strand.bed
+
+	Sort concatenated positive plus negative strand wig files (not essential but is a good configuration for the file)
+	- sort -V -k 1,1 -k 2,2n -k 3,3n /PATH/3p_peaks_positive_plus_negative_strand.bed > /PATH/3p_peaks_positive_plus_negative_strand_sorted.bed
+
+
+3) validate long reads
+
+	Long read validation
+	- perl /PATH/LR_validate.pl   -5Pp /PATH/MU_5P_CAGE_peaks_chr1.bed  -mcde 10 -mcdi 2 -3Pp /PATH/MU_3P_peaks_chr1.bed  -3Pde 10 -3Pdi 10 -minSJ 1 -SJt /PATH/MU-SJ.out.tab  -f /PATH/hg38_chr1_first_portion.fa  -LR /PATH/MU_LR_fullLength.merged_1million.bed
+
+	Long read validation with previously identified ATG start sites enforcing ORF predictions
+	- perl /PATH/LR_validate.pl   -5Pp /PATH/MU_5P_CAGE_peaks_chr1.bed  -mcde 10 -mcdi 2 -3Pp /PATH/MU_3P_peaks_chr1.bed  -3Pde 10 -3Pdi 10 -minSJ 1 -SJt /PATH/MU-SJ.out.tab  -f /PATH/hg38_chr1_first_portion.fa  -LR /PATH/MU_LR_fullLength.merged_1million.bed -ATG /Users/erikflemington/Desktop/harris_transfer/final_scripts/4_LR_validate/test_data/hg38_chr1_known_ORF_start_sites.bed
