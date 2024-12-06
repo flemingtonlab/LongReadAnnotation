@@ -72,7 +72,7 @@ git clone https://github.com/flemingtonlab/LongReadAnnotation.git
 ### 3. Validate Long Reads
 1. Long read validation:
    ```sh
-   perl /PATH/LR_validate.pl -5Pp /PATH/MU_5P_CAGE_peaks_chr1.bed -mcde 10 -mcdi 2 -3Pp /PATH/MU_3P_peaks_chr1.bed -3Pde 10 -3Pdi 10 -minSJ 1 -SJt /PATH/MU-SJ.out.tab -f /PATH/hg38_chr1_first_por...
+   perl /PATH/LR_validate.pl -5Pp /PATH/MU_5P_CAGE_peaks_chr1.bed -mcde 10 -mcdi 2 -3Pp /PATH/MU_3P_peaks_chr1.bed -3Pde 10 -3Pdi 10 -minSJ 1 -SJt /PATH/MU-SJ.out.tab -f /PATH/hg38_chr1_first_portion.fa  -LR /PATH/MU_LR_fullLength.merged_1million.bed
    ```
 2. Long read validation with previously identified ATG start sites enforcing ORF predictions:
    ```sh
