@@ -39,7 +39,7 @@ git clone https://github.com/flemingtonlab/LongReadAnnotation.git
    ```
 2. Negative strand input wigs values must be negative! (If coverage values for negative strand wigs are positive, use invert_wigs.pl to change sign):
    ```sh
-   perl /PATH/peak_caller_from_wigs.pl -w PATH/MC1_Unique.str2.out.negative_values_chr1.wig,PATH/MC2_Unique.str2.out.negative_values_chr1.wig,PATH/MC4_Unique.str2.out.negative_values_chr1.wig -mw 8 -fva 0.2 -mspd 10 -s -
+   perl /PATH/peak_caller_from_wigs.pl -w PATH/MC1_Unique.str2.out.negative_values_chr1.wig,PATH/MC2_Unique.str2.out.negative_values_chr1.wig,PATH/MC4_Unique.str2.out.negative_values_chr1.wig -mw 8 -fva 0.2 -mspd 10 -s - -CAGE y
    ```
 3. Concatenate positive and negative strand bed files:
    ```sh
