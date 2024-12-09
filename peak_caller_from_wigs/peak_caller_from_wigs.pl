@@ -273,10 +273,10 @@ sub identify_clusters {
         }
         if($CAGE eq "y" || $CAGE eq "Y") {
             if($strand eq "+") {
-                print OUT $chr, "\t", $start_coord+1, "\t", $end_coord+1, "\t",  $chr, "\:", $max_amp_coord, "\-", $max_amp_coord+1, "\;", "peak_", $peak_count, "_strand_", $strand, "\;", $max_amp, "\;", $strand, "\t", $total_counts, "\t", $strand, "\t\.\t\.\t\.\n";
+                print OUT $chr, "\t", $start_coord+1, "\t", $end_coord+1, "\t",  $chr, "\;", $max_amp_coord, "\;", $max_amp_coord+1, "\;", "peak_", $peak_count, "_strand_", $strand, "\;", $max_amp, "\;", $strand, "\t", $total_counts, "\t", $strand, "\t\.\t\.\t\.\n";
             }
             elsif($strand eq "-") {
-                print OUT $chr, "\t", $start_coord-1, "\t", $end_coord-1, "\t",  $chr, "\:", $max_amp_coord-2, "\-", $max_amp_coord-1, "\;", "peak_", $peak_count, "_strand_", $strand, "\;", $max_amp, "\;", $strand, "\t", $total_counts, "\t", $strand, "\t\.\t\.\t\.\n";
+                print OUT $chr, "\t", $start_coord-1, "\t", $end_coord-1, "\t",  $chr, "\;", $max_amp_coord-2, "\;", $max_amp_coord-1, "\;", "peak_", $peak_count, "_strand_", $strand, "\;", $max_amp, "\;", $strand, "\t", $total_counts, "\t", $strand, "\t\.\t\.\t\.\n";
             }
         }
         else {
