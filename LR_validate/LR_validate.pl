@@ -61,15 +61,15 @@ my $out_file;
 my $negative_out_file;
 
 sub program_info {
-    print "\n\tOVERVIEW: LR_validate.pl is designed to validate mapped long read data using 1) splice junction\n\tdata from short read alignments, 2) CAGE 5' end peaks, 3) ONT read 3' end peaks, and\n\t4) an input mapped long read file in bed12 format. 
+    print "\n\tOVERVIEW: LR_validate.pl is designed to validate mapped long read data using 1) splice junction\n\tdata from short read alignments, 2) CAGE 5' end peaks, 3) LR read 3' end peaks, and\n\t4) an input mapped long read file in bed12 format. 
     
-    \n\n\tInputs:\n\t\t-5Pp\tCAGE peak file (.bed10 format CAGE peak output from peak_caller_from_wigs.pl).\n\t\t-mcde\tMinimum CAGE peak depth\n\t\t-mcdi\tMaximum distance between CAGE peak and start of ONT read\n\t\t-3Pp\t3' peak file (bed6 format)\n\t\t-3Pde\tMinimum 3' peak read depth\n\t\t-3Pdi\tMaximum 3' distance between ONT end and 3' peak\n\t\t-minSJ\tMinimum number of short read splice junctions to validate spliced ONT reads\n\t\t-SJt\tSplice junction tab file from STAR alignment of short reads\n\t\t-f\tgenome fasta file\n\t\t-LR\tInput long read bed12 file
+    \n\n\tInputs:\n\t\t-5Pp\tCAGE peak file (.bed10 format CAGE peak output from peak_caller_from_wigs.pl).\n\t\t-mcde\tMinimum CAGE peak depth\n\t\t-mcdi\tMaximum distance between CAGE peak and start of LR read\n\t\t-3Pp\t3' peak file (bed6 format)\n\t\t-3Pde\tMinimum 3' peak read depth\n\t\t-3Pdi\tMaximum 3' distance between LR end and 3' peak\n\t\t-minSJ\tMinimum number of short read splice junctions to validate spliced LRs\n\t\t-SJt\tSplice junction tab file from STAR alignment of short reads\n\t\t-f\tgenome fasta file\n\t\t-LR\tInput long read bed12 file
     
     \n\n\tOptions:\n\t\t\-ATG\tknown ATG starts site file\n\t\t\-h\thelp
     
-    \n\n\tUsage: perl LR_validate.pl [INPUTS] -5Pp <5' CAGE peak file (bed10 format from peak_caller_from_wigs.pl)> -mcde <Minimum CAGE peak depth> -mcdi <Maximum distance between CAGE peak and start of ONT read> -3Pp <3' peak file> -3Pde <Minimum read depth of 3' peak clusters> -3Pdi <Maximum 3' distance between ONT end and 3' peaks> -minSJ <Minimum number of validating short read splice junctions detected> -SJt <Splice junction tab file from STAR alignment of short reads> -ATG <known ATG start site file (bed6) (default = no known starts)> -f <genome fasta file> -LR <Input long read bed12 file>
+    \n\n\tUsage: perl LR_validate.pl [INPUTS] -5Pp <5' CAGE peak file (bed10 format from peak_caller_from_wigs.pl)> -mcde <Minimum CAGE peak depth> -mcdi <Maximum distance between CAGE peak and start of LR read> -3Pp <3' peak file> -3Pde <Minimum read depth of 3' peak clusters> -3Pdi <Maximum 3' distance between LR end and 3' peaks> -minSJ <Minimum number of validating short read splice junctions detected> -SJt <Splice junction tab file from STAR alignment of short reads> -ATG <known ATG start site file (bed6) (default = no known starts)> -f <genome fasta file> -LR <Input long read bed12 file>
     
-    \n\n\tExample: perl validate_ONT.pl -5Pp /PATH/5Ppeakfile.bed -mcde 10 -mcdi 2 -3Pp /PATH/3Ppeakfile.bed -3Pde 10 -3Pdi 10 -minSJ 2 -SJt /PATH/SJfile.tab -f /PATH/genome.fa -LR /PATH/LRfile.bed\n\n";
+    \n\n\tExample: perl LR_validate.pl -5Pp /PATH/5Ppeakfile.bed -mcde 10 -mcdi 2 -3Pp /PATH/3Ppeakfile.bed -3Pde 10 -3Pdi 10 -minSJ 2 -SJt /PATH/SJfile.tab -f /PATH/genome.fa -LR /PATH/LRfile.bed\n\n";
     exit;
 }
 
@@ -146,7 +146,7 @@ sub qc {
         exit;
     }
     elsif (not defined($max_3P_distance)) {
-        print "\nMaximum distance between 3' ONT read and 3' cluster not defined!\n";
+        print "\nMaximum distance between 3' LR read and 3' cluster not defined!\n";
         program_info;
         exit;
     }
@@ -181,7 +181,7 @@ sub setup {
     $out_file = $out_directory."\/VALIDATED_".$basename."\.bed";
 
     open(OUT2, ">$summary_file") or die "couldn't open summary file";
-    print OUT2 "CAGE consensus file: ", basename($CAGE_cons_file), "\nMin CAGE depth: ", $min_CAGE_depth, "\nMax distance from ONT start to CAGE peak: ", $max_CAGE_distance, "\nThree prime end peak file: ", basename($threeP_file), "\nMinimum 3Prime peak depth: ", $min_3P_depth, "\nMax distance from ONT end to 3P peak: ", $max_3P_distance, "\nMinimum splice junction reads: ", $min_SJ_reads, "\nGenome fasta file: ", basename($genome_fasta), "\nShort read SJ tab file: ", basename($short_read_SJ_tab_file), "\nKnown start site file: ", basename($known_atg_file), "\nONT input file: ", basename($ONT_file), "\n";
+    print OUT2 "CAGE consensus file: ", basename($CAGE_cons_file), "\nMin CAGE depth: ", $min_CAGE_depth, "\nMax distance from ONT start to CAGE peak: ", $max_CAGE_distance, "\nThree prime end peak file: ", basename($threeP_file), "\nMinimum 3Prime peak depth: ", $min_3P_depth, "\nMax distance from LR end to 3P peak: ", $max_3P_distance, "\nMinimum splice junction reads: ", $min_SJ_reads, "\nGenome fasta file: ", basename($genome_fasta), "\nShort read SJ tab file: ", basename($short_read_SJ_tab_file), "\nKnown start site file: ", basename($known_atg_file), "\nLR input file: ", basename($ONT_file), "\n";
 
     $negative_out_file = $out_directory."\/".$basename."_negative_splice_junction_reads.bed";
     open(OUT3, ">$negative_out_file") or die "couldn't open summary file";
@@ -248,13 +248,13 @@ sub process_CAGE_cons_file {
     close(OUT_NEG);
 
     my $CAGE_cons_file_pos_sorted = $CAGE_cons_file_pos;
-    $CAGE_cons_file_pos_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $CAGE_cons_file_pos_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 2,2n -k 3,3n  $CAGE_cons_file_pos > $CAGE_cons_file_pos_sorted`;
     `rm $CAGE_cons_file_pos`;
     $CAGE_cons_file_pos = $CAGE_cons_file_pos_sorted;
 
     my $CAGE_cons_file_neg_sorted = $CAGE_cons_file_neg;
-    $CAGE_cons_file_neg_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $CAGE_cons_file_neg_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 2,2n -k 3,3n   $CAGE_cons_file_neg > $CAGE_cons_file_neg_sorted`;
     `rm $CAGE_cons_file_neg`;
     $CAGE_cons_file_neg = $CAGE_cons_file_neg_sorted;
@@ -310,13 +310,13 @@ sub process_3P_file {
     close(OUT_NEG);
 
     $threeP_file_pos_sorted = $threeP_file_pos;
-    $threeP_file_pos_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $threeP_file_pos_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 2,2n -k 3,3n  $threeP_file_pos > $threeP_file_pos_sorted`;
     `rm $threeP_file_pos`;
     $threeP_file_pos = $threeP_file_pos_sorted;
 
     $threeP_file_neg_sorted = $threeP_file_neg;
-    $threeP_file_neg_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $threeP_file_neg_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 2,2n -k 3,3n $threeP_file_neg > $threeP_file_neg_sorted`;
     `rm $threeP_file_neg`;
     $threeP_file_neg = $threeP_file_neg_sorted;
@@ -411,8 +411,8 @@ sub process_SJTab_file {
 sub process_ONT_file {
     #my $datetime = DateTime->now; 
     print "Processing long read file...\n\n"; #(",$datetime, ")\n\n";
-    my $ont_file_pos = $ONT_file."_ONT_POS.bed";
-    my $ont_file_neg = $ONT_file."_ONT_NEG.bed";
+    my $ont_file_pos = $ONT_file."_LR_POS.bed";
+    my $ont_file_neg = $ONT_file."_LR_NEG.bed";
     my $ontfile_pos_sorted;
     my $ontfile_neg_sorted;
    
@@ -436,13 +436,13 @@ sub process_ONT_file {
     close(OUT_NEG);
 
     $ontfile_pos_sorted = $ont_file_pos;
-    $ontfile_pos_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $ontfile_pos_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 2,2n -k 3,3n  $ont_file_pos > $ontfile_pos_sorted`;
     `rm $ont_file_pos`;
     $ont_file_pos = $ontfile_pos_sorted;
 
     $ontfile_neg_sorted = $ont_file_neg;
-    $ontfile_neg_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $ontfile_neg_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 3,3n -k 2,2n   $ont_file_neg > $ontfile_neg_sorted`;
     `rm $ont_file_neg`;
     $ont_file_neg = $ontfile_neg_sorted;
@@ -478,7 +478,7 @@ sub ONT_CAGE_overlap {
     my $j = 0;
 
     #my $datetime = DateTime->now; 
-    print "Determining 5' end CAGE overlap with ONT reads (may take a few minutes)...\n\n"; #(",$datetime, ")\n\n";
+    print "Determining 5' end CAGE overlap with LRs (may take a few minutes)...\n\n"; #(",$datetime, ")\n\n";
     my $pos_output_file = "$ONT_file.CAGE_validated_pos.bed";
     open(OUT, ">$pos_output_file") or die or die "Couldn't open output file '$pos_output_file': $!";
     for (; $j < scalar(@ONT_reads_pos); $j++) {
@@ -533,16 +533,16 @@ sub ONT_CAGE_overlap {
         }
     }
     close OUT;
-    print OUT2 "\nFraction of ONT reads with CAGE peak validation = ", $hit_count/$count, "\n";
+    print OUT2 "\nFraction of LRs with CAGE peak validation = ", $hit_count/$count, "\n";
 
     my $pos_output_file_sorted = $pos_output_file;
-    $pos_output_file_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $pos_output_file_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 3,3n -k 2,2n $pos_output_file > $pos_output_file_sorted`;
     `rm $pos_output_file`;
     $pos_output_file = $pos_output_file_sorted;
 
     my $neg_output_file_sorted = $neg_output_file;
-    $neg_output_file_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $neg_output_file_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 2,2n -k 3,3n $neg_output_file > $neg_output_file_sorted`;
     `rm $neg_output_file`;
     $neg_output_file = $neg_output_file_sorted;
@@ -572,7 +572,7 @@ sub ONT_CAGE_overlap {
 
 sub ONT_3_prime_overlap {
     #my $datetime = DateTime->now; 
-    print "Determining 3' end overlap with CAGE validated ONT reads...\n\n"; #(",$datetime, ")\n\n";
+    print "Determining 3' end overlap with CAGE validated LRs...\n\n"; #(",$datetime, ")\n\n";
     my $count = 0;
     my $hit_count = 0;
     my $k = 0;
@@ -625,12 +625,12 @@ sub ONT_3_prime_overlap {
             }
         }
     }
-    print OUT2 "\nFraction of CAGE validated ONT reads with 3P validation = ", $hit_count / $count, "\n";
+    print OUT2 "\nFraction of CAGE validated LRs with 3P validation = ", $hit_count / $count, "\n";
 }
 
 sub ONT_AAUAAA_motif {
     #my $datetime = DateTime->now; 
-    print "Assessing presence of AAUAAA motifs in 5' and 3' validated ONT reads...\n\n"; #(",$datetime, ")\n\n";
+    print "Assessing presence of AAUAAA motifs in 5' and 3' validated LRs...\n\n"; #(",$datetime, ")\n\n";
     my $count = 0;
     my $hit_count = 0;
     my $hit_AUUAAA_count = 0;
@@ -710,19 +710,19 @@ sub ONT_AAUAAA_motif {
     close($OUT_POS);
     close($OUT_NEG);
 
-    print OUT2 "\nFraction of 3P and CAGE validated ONT reads with upstream AAUAAA = ", $hit_count / $count, "\n";
-    print OUT2 "Fraction of 3P and CAGE validated ONT reads with upstream AUUAAA = ", $hit_AUUAAA_count / $count, "\n";
-    print OUT2 "Fraction of 3P and CAGE validated ONT reads with upstream AAUACA = ", $hit_AAUACA_count / $count, "\n";
-    print OUT2 "Fraction of 3P and CAGE validated ONT reads with upstream GAUAAA = ", $hit_GAUAAA_count / $count, "\n";
+    print OUT2 "\nFraction of 3P and CAGE validated LRs with upstream AAUAAA = ", $hit_count / $count, "\n";
+    print OUT2 "Fraction of 3P and CAGE validated LRs with upstream AUUAAA = ", $hit_AUUAAA_count / $count, "\n";
+    print OUT2 "Fraction of 3P and CAGE validated LRs with upstream AAUACA = ", $hit_AAUACA_count / $count, "\n";
+    print OUT2 "Fraction of 3P and CAGE validated LRs with upstream GAUAAA = ", $hit_GAUAAA_count / $count, "\n";
 
     my $output_file_pos_sorted = $output_file_pos;
-    $output_file_pos_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $output_file_pos_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 2,2n -k 3,3n $output_file_pos > $output_file_pos_sorted`;
     `rm $output_file_pos`;
     $output_file_pos = $output_file_pos_sorted;
 
     my $output_file_neg_sorted = $output_file_neg;
-    $output_file_neg_sorted =~ s/(\.\w+)?$/_sortedforvalidation.bed/;
+    $output_file_neg_sorted =~ s/\.bed$/_sortedforvalidation.bed/;
     `sort -V -k 1,1 -k 3,3n -k 2,2n $output_file_neg > $output_file_neg_sorted`;
     `rm $output_file_neg`;
     $output_file_neg = $output_file_neg_sorted; 
@@ -753,7 +753,7 @@ sub ONT_AAUAAA_motif {
 
 sub validate_SJs {
     #my $datetime = DateTime->now; 
-    print "Validating SJs in spliced ONT reads using short read data (STAR .tab file)...\n\n"; #(",$datetime, ")\n\n";
+    print "Validating SJs in spliced LRs using short read data (STAR .tab file)...\n\n"; #(",$datetime, ")\n\n";
     my $i = 0;
     my $k = 0;
     for (my $j = 0; $j < scalar(@CAGE_and_3P_validated_AAUAAA_pos); $j++) {
@@ -880,7 +880,7 @@ sub validate_SJs {
 
 sub print_CAGE_3P_validated_ONT_reads {
     #my $datetime = DateTime->now; 
-    print "Printing validated ONT reads...\n\n"; #(",$datetime, ")\n\n";
+    print "Printing validated LRs...\n\n"; #(",$datetime, ")\n\n";
     open (OUT, ">$out_file") or die "couldn't open output file";
     print OUT join("\n", @CAGE_and_3P_validated_AAUAAA_SJ_val_pos);
     print OUT join("\n", @CAGE_and_3P_validated_AAUAAA_SJ_val_neg);
@@ -1158,7 +1158,13 @@ sub find_reading_frames {
                     for (my $j=0; $j < scalar(@TERM_positions); $j++) {
                         my @split_TERM = split("\;", $TERM_positions[$j]);
                         my $end_position = $split_TERM[0];
-                        my $length = $end_position - $ATG_position;
+                        my $length;
+                        if($ATG_position eq "null") {
+                            $length = 0;
+                        }
+                        else {
+                            $length = $end_position - $ATG_position;
+                        }
                         if ($length % 3 == 0) {
                             if($length >= 300 || ($known_atg_coord ne "null" and $length > 0)) {
                                 $hit++;
@@ -1203,10 +1209,16 @@ sub find_reading_frames {
                     for (my $j=scalar(@TERM_positions)-1; $j >= 0; $j--) {
                         my @split_TERM = split("\;", $TERM_positions[$j]);
                         my $end_position = $split_TERM[1]+1;
-                        my $length = $ATG_position - $end_position;
+                        my $length;
+                        if($ATG_position eq "null") {
+                            $length = 0;
+                        }
+                        else {
+                            $length = $ATG_position - $end_position;
+                        }
                         if ($length % 3 == 0) {
                             if($length >= 300 || ($known_atg_coord ne "null" and $length > 0)) {
-                                $hit++;
+                                
                                 $thick_start = $positions_array[$end_position]-3;
                                 $thick_end = $positions_array[$ATG_position];
                                 return($thick_start, $thick_end);
